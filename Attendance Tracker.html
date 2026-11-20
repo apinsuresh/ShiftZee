@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Attendance Tracker</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;
+--y:#FFD400;--k:#111111;--w:#FFFFFF;--gr:#F4F4F4;--dg:#292929}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--gr);color:var(--k);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:hidden}
+.app{max-width:520px;margin:0 auto;padding:18px 16px 44px}
+.hd{background:var(--y);border:2px solid var(--k);border-radius:24px;padding:20px 16px 16px;margin:8px 0 16px;position:relative;box-shadow:4px 4px 0 var(--k)}
+.stk{position:absolute;top:-12px;right:14px;background:var(--k);color:var(--y);font-size:11px;font-weight:800;padding:5px 10px;border-radius:8px;transform:rotate(6deg);letter-spacing:.5px}
+h1{font-size:38px;font-weight:900;margin:0;line-height:.95;letter-spacing:-1.5px;color:var(--k)}
+.sub{font-weight:700;font-size:15px;margin:8px 0 10px}
+.wk{display:inline-block;background:var(--k);color:var(--w);font-size:12px;font-weight:700;padding:5px 11px;border-radius:99px;transform:rotate(-1.5deg)}
+.card{background:var(--w);border-radius:20px;border:2px solid var(--k);box-shadow:3px 3px 0 var(--k);padding:14px;margin-bottom:16px}
+.quote{display:flex;flex-direction:column;gap:12px;background:var(--k);color:var(--y)}.qt{font-size:16px;font-weight:700;line-height:1.35;animation:fi .3s}
+.quote .btn{align-self:flex-start;font-size:13px;font-weight:700;background:var(--y);color:var(--k);border-color:var(--y)}
+.name label{font-size:12px;font-weight:700;display:block;margin-bottom:4px}
+input{width:100%;font:inherit;padding:10px 12px;border-radius:12px;border:2px solid var(--k);background:var(--gr);color:var(--k)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.stat{border-radius:20px;border:2px solid var(--k);padding:12px 14px;box-shadow:3px 3px 0 var(--k);transition:transform .15s;position:relative}
+.stat:nth-child(odd){transform:rotate(-1deg)}.stat:nth-child(even){transform:rotate(1deg)}.stat:active{transform:scale(.97)}
+.stat.k{background:var(--k);color:var(--y)}.stat.y{background:var(--y);color:var(--k)}.stat.w{background:var(--w);color:var(--k)}
+.stat i{font-style:normal;font-size:20px}.stat b{display:block;font-size:42px;line-height:1;font-weight:900;margin:2px 0}
+.stat span{display:block;font-size:13px;font-weight:900;letter-spacing:.5px}.stat small{display:block;font-size:11px;opacity:.8;font-weight:600}
+.nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.nav h2{font-size:20px;font-weight:900;margin:0;text-transform:uppercase;letter-spacing:-.3px}
+.btn{border:2px solid var(--k);background:var(--w);color:var(--k);border-radius:12px;padding:8px 13px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:transform .12s,background .2s}
+.btn:hover{background:var(--y)}.btn:active{transform:scale(.95)}
+.btn.pri{background:var(--y);color:var(--k)}
+.cap{text-align:center;font-size:12px;font-weight:600;font-style:italic;margin-bottom:8px;transform:rotate(-.6deg)}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;animation:fi .25s ease-out}
+.dow{font-size:11px;font-weight:800;text-align:center;padding:4px 0}
+.day{aspect-ratio:1/1.4;border-radius:12px;border:2px solid var(--gr);background:var(--gr);color:var(--k);font:inherit;font-size:14px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:5px;gap:1px;cursor:pointer;transition:transform .12s,background .2s;min-width:0}
+.day:hover{border-color:var(--k)}.day:active{transform:scale(.92)}
+.day.on{background:var(--y);border-color:var(--k)}
+.day.today{border-color:var(--k);background:var(--w)}.day.today>span{background:var(--k);color:var(--y);border-radius:99px;padding:0 6px}
+.ms{font-size:8px;line-height:1.2;padding:1px 3px;border:1px solid var(--k);border-radius:5px;white-space:nowrap;font-weight:700;max-width:100%;overflow:hidden;margin-top:1px}
+.P{background:var(--y);color:var(--k);border-color:var(--k)}.L{background:var(--k);color:var(--y);border-color:var(--k)}.O{background:var(--w);color:var(--k);border-color:var(--k)}
+.legend{display:flex;gap:14px;justify-content:center;margin-top:12px;font-size:12px;font-weight:700}
+.legend i{display:inline-block;width:12px;height:12px;border:1.5px solid var(--k);border-radius:4px;margin-right:5px;vertical-align:-2px}
+.msg{font-size:15px;font-weight:800;text-align:center;background:var(--y);line-height:1.35;transform:rotate(-.7deg)}
+h3{font-size:18px;font-weight:900;margin:0 0 10px}
+.row{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:none;color:var(--k);font:inherit;padding:10px 4px;border-bottom:2px dashed var(--gr);cursor:pointer}
+.row:last-child{border-bottom:0}.row .d{flex:1;font-weight:800}.row .d span{display:block;font-size:12px;font-weight:600;opacity:.65}
+.pill{font-size:12px;font-weight:800;padding:4px 10px;border:2px solid var(--k);border-radius:99px}
+.empty{text-align:center;padding:18px 0;font-size:14px;font-weight:600;line-height:1.5}
+.sum{display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px dashed var(--gr);font-size:15px;font-weight:600}.sum:last-child{border:0}.sum b{font-weight:900}
+.dl{width:100%;padding:16px;font-size:16px;font-weight:900;letter-spacing:.5px;border-radius:16px;margin-bottom:10px;box-shadow:4px 4px 0 var(--k)}
+.link{background:none;border:0;color:var(--k);text-decoration:underline;font:inherit;font-size:13px;font-weight:600;width:100%;padding:8px;cursor:pointer}.link:disabled{opacity:.35}
+.ov{position:fixed;inset:0;background:rgba(17,17,17,.7);display:flex;align-items:flex-end;justify-content:center;z-index:20;animation:fi .18s}
+.sheet{background:var(--w);border:2px solid var(--k);border-bottom:0;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0px));animation:u .22s ease-out}
+.sheet h4{margin:0;font-size:21px;font-weight:900}.sheet p{margin:2px 0 14px;font-size:14px;font-weight:600;opacity:.7}
+.opt{display:block;width:100%;padding:16px;margin-bottom:8px;border-radius:14px;border:2px solid var(--k);font:inherit;font-size:16px;font-weight:800;cursor:pointer;text-align:left}
+.shs{margin-bottom:12px}.sht{font-weight:900;margin-bottom:6px}.sg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sb{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:11px 10px;border-radius:12px;border:2px solid var(--gr);background:var(--gr);color:var(--k);font:inherit;cursor:pointer;transition:transform .12s;min-width:0}
+.sb:active{transform:scale(.96)}.sb b{font-size:14px;font-weight:900}.sb em{font-style:normal;font-size:11px;font-weight:600;opacity:.85;line-height:1.25}
+.sb.sel{border-color:var(--k);box-shadow:2px 2px 0 var(--k)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--k);color:var(--y);padding:12px 18px;border-radius:16px;font-size:14px;font-weight:800;z-index:30;max-width:90vw;text-align:center;border:2px solid var(--y);animation:pop .3s cubic-bezier(.2,1.4,.4,1)}
+.boot{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:var(--y);z-index:50}
+.cup{font-size:64px;animation:bob 1.1s ease-in-out infinite}.bt{font-size:15px;font-weight:900;letter-spacing:.5px}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}}@keyframes u{from{transform:translateY(30px);opacity:.4}}
+@keyframes bob{50%{transform:translateY(-5px) rotate(-4deg)}}@keyframes pop{from{transform:translate(-50%,20px) scale(.8);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head>
+<body><div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const {useState,useEffect,useRef}=React;const html=htm.bind(React.createElement);
+const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const ST={P:{n:'Present',e:'🟢',s:'P'},L:{n:'Leave',e:'🔴',s:'L'},O:{n:'Off',e:'🟡',s:'O'}};
+const WORK='Kovai’s Filter Coffee';
+const ld=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const mk=(y,m)=>y+'-'+String(m+1).padStart(2,'0');
+const dim=(y,m)=>new Date(y,m+1,0).getDate();
+const fd=(y,m,d)=>String(d).padStart(2,'0')+' '+MONTHS[m].slice(0,3)+' '+y;
+function stats(rec,y,m){const n=dim(y,m),c={MP:0,ML:0,MO:0,EP:0,EL:0,EO:0};
+ for(let d=1;d<=n;d++){const r=rec[d]||{};['M','E'].forEach(k=>{if(r[k])c[k+r[k]]++})}
+ const W=c.MP+c.EP,L=c.ML+c.EL,O=c.MO+c.EO,R=W+L+O;return{...c,W,L,O,R,U:n*2-R,n}}
+const rowsOf=S=>[['Morning Present',S.MP],['Morning Leave',S.ML],['Morning Off',S.MO],['Evening Present',S.EP],['Evening Leave',S.EL],['Evening Off',S.EO],['Total Shifts Worked',S.W],['Total Leave Shifts',S.L],['Total Off Shifts',S.O],['Total Marked Shifts',S.R],['Unmarked Shifts',S.U]];
+const sl=(rec,d,k)=>{const s=(rec[d]||{})[k];return s?ST[s].n:'Not Marked'};
+function fname(name,y,m){return 'Attendance-'+MONTHS[m]+'-'+y+'.'}
+
+async function makeXlsx(name,y,m,rec){
+ const S=stats(rec,y,m),wb=new ExcelJS.Workbook(),ws=wb.addWorksheet('Attendance');
+ ws.columns=[{width:18},{width:16},{width:18},{width:18}];
+ const bd={top:{style:'thin'},left:{style:'thin'},bottom:{style:'thin'},right:{style:'thin'}};
+ const fl=a=>({type:'pattern',pattern:'solid',fgColor:{argb:a}});
+ ws.mergeCells('A1:D1');const t=ws.getCell('A1');t.value=WORK+' — Attendance Report';
+ t.font={bold:true,size:15,color:{argb:'FFFFFFFF'}};t.fill=fl('FF14532D');t.alignment={horizontal:'center',vertical:'middle'};ws.getRow(1).height=30;
+ [['Employee Name',name||'—'],['Workplace',WORK],['Month',MONTHS[m]],['Year',y]].forEach((r,i)=>{const row=ws.getRow(3+i);row.getCell(1).value=r[0];row.getCell(1).font={bold:true};row.getCell(2).value=r[1];row.getCell(2).alignment={horizontal:'left'}});
+ const h=ws.getRow(8);['Date','Day','Morning Shift','Evening Shift'].forEach((x,i)=>{const c=h.getCell(i+1);c.value=x;c.font={bold:true,color:{argb:'FFFFFFFF'}};c.fill=fl('FF14532D');c.border=bd;c.alignment={horizontal:'center'}});
+ const fills={P:'FFDCF1E3',L:'FFFDE4E4',O:'FFFFF0C9'};
+ for(let d=1;d<=S.n;d++){const row=ws.getRow(8+d),r=rec[d]||{};
+  row.getCell(1).value=fd(y,m,d);row.getCell(2).value=DAYS[new Date(y,m,d).getDay()];row.getCell(3).value=sl(rec,d,'M');row.getCell(4).value=sl(rec,d,'E');
+  for(let i=1;i<=4;i++){const c=row.getCell(i);c.border=bd;c.alignment={horizontal:'center'};
+   const s=i===3?r.M:i===4?r.E:null;if(s)c.fill=fl(fills[s]);else if(i>2)c.font={color:{argb:'FF888888'},italic:true}}}
+ const b=8+S.n+2;
+ rowsOf(S).forEach((r,i)=>{const row=ws.getRow(b+i);row.getCell(1).value=r[0];row.getCell(3).value=r[1];ws.mergeCells('A'+(b+i)+':B'+(b+i));[1,3].forEach(k=>{row.getCell(k).font={bold:true};row.getCell(k).border=bd});row.getCell(3).alignment={horizontal:'center'}});
+ return wb.xlsx.writeBuffer();
+}
+function makePdf(name,y,m,rec){
+ const S=stats(rec,y,m),doc=new jspdf.jsPDF({unit:'mm',format:'a4'}),W=210,x0=20,cw=[40,38,46,46];
+ doc.setFillColor(20,83,45);doc.rect(0,0,W,30,'F');doc.setTextColor(255);doc.setFont('helvetica','bold').setFontSize(19).text(WORK,x0,14);
+ doc.setFont('helvetica','normal').setFontSize(11).text('Attendance Report',x0,22);
+ doc.setTextColor(30);doc.setFontSize(11);
+ doc.setFont('helvetica','bold').text('Employee:',x0,40);doc.setFont('helvetica','normal').text(name||'—',x0+24,40);
+ doc.setFont('helvetica','bold').text('Month:',110,40);doc.setFont('helvetica','normal').text(MONTHS[m]+' '+y,127,40);
+ let yy=46;const rh=5.2;
+ const head=()=>{doc.setFillColor(20,83,45);doc.rect(x0,yy,170,7,'F');doc.setTextColor(255).setFont('helvetica','bold').setFontSize(9.5);let x=x0;['Date','Day','Morning Shift','Evening Shift'].forEach((t,i)=>{doc.text(t,x+3,yy+4.8);x+=cw[i]});yy+=7;doc.setTextColor(30)};
+ head();const col={P:[220,241,227],L:[253,228,228],O:[255,240,201]};
+ for(let d=1;d<=S.n;d++){if(yy+rh>285){doc.addPage();yy=15;head()}
+  const r=rec[d]||{};doc.setDrawColor(215);let x=x0;
+  [fd(y,m,d),DAYS[new Date(y,m,d).getDay()],sl(rec,d,'M'),sl(rec,d,'E')].forEach((t,i)=>{const s=i===2?r.M:i===3?r.E:null;
+   if(s){doc.setFillColor(...col[s]);doc.rect(x,yy,cw[i],rh,'FD')}else doc.rect(x,yy,cw[i],rh);
+   doc.setFont('helvetica','normal').setFontSize(8.5).setTextColor(i>1&&!s?140:30);doc.text(t,x+3,yy+3.8);x+=cw[i]});yy+=rh}
+ if(yy+50>287){doc.addPage();yy=15}
+ yy+=8;doc.setTextColor(20,83,45).setFont('helvetica','bold').setFontSize(12).text('Monthly Attendance Summary',x0,yy);yy+=3;
+ rowsOf(S).forEach((r,i)=>{const cx=i<6?x0:x0+90,ry=yy+6+(i<6?i:i-6)*6;doc.setTextColor(30).setFontSize(9.5).setFont('helvetica','bold').text(r[0],cx+2,ry);doc.text(String(r[1]),cx+62,ry)});
+ return doc.output('arraybuffer');
+}
+
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const QUOTES=['Clocking in because bills don’t accept vibes.','My salary and I are in a long-distance relationship.','Powered by coffee and financial trauma.','I came. I worked. I need snacks.','Work hard. Pretend harder.','Another shift, another plot twist.','My body is at work. My soul is on airplane mode.','Attendance is the only relationship I’m maintaining.','I work because shopping isn’t free.','Professional employee. Amateur sleeper.'];
+const PT=['Attendance secured. Your bank account is proud. 💰'],LT=['Your escape has been documented. 🏃'],DBL=['Two shifts. One human. Questionable decisions. ☕☕'];
+const MSGP=['At this point, they should name a coffee after you. ☕'],MSGL=['Your escape has been documented. 🏃'],MSGD=['Two shifts. One human. Questionable decisions. ☕☕'];
+const EMPTY=['The calendar is suspiciously empty. 👀','No evidence found. Suspiciously clean. 🕵️','Zero shifts logged. Did you even exist this month?'];
+const FUN=(()=>{const f={P:'I woke up. Barely. 🫡',L:'Escape successful. 🏃',O:'Peace has been restored. 😌'};return{M:f,E:f}})();
+function App(){
+ const now=new Date();
+ const [v,setV]=useState({y:now.getFullYear(),m:now.getMonth()});
+ const [all,setAll]=useState(()=>{const a=ld('kfc_att',{}),o={};Object.keys(a).forEach(k=>{o[k]={};Object.keys(a[k]).forEach(d=>{const x=a[k][d];o[k][d]=typeof x==='string'?{M:x}:x})});return o});
+ const [name,setName]=useState(()=>ld('kfc_name',''));
+ const [sel,setSel]=useState(null);const [menu,setMenu]=useState(false);const [conf,setConf]=useState(false);
+ const [toast,setToast]=useState('');const tt=useRef();
+ const [qi,setQi]=useState(()=>Math.floor(Math.random()*QUOTES.length));const [boot,setBoot]=useState(true);useEffect(()=>{const t=setTimeout(()=>setBoot(false),1100);return()=>clearTimeout(t)},[]);
+ const {y,m}=v,key=mk(y,m),rec=all[key]||{},S=stats(rec,y,m);
+ const say=t=>{setToast(t);clearTimeout(tt.current);tt.current=setTimeout(()=>setToast(''),1600)};
+ const save=(d,k,s)=>{const r={...rec},day={...(r[d]||{})};if(s)day[k]=s;else delete day[k];if(Object.keys(day).length)r[d]=day;else delete r[d];
+  const n={...all,[key]:r};setAll(n);sv('kfc_att',n);{const o=(r[d]||{})[k==='M'?'E':'M'];say(s==='P'?(o==='P'?pick(DBL):pick(PT)):s==='L'?pick(LT):s==='O'?'Employee unavailable. Try again later. 😌':'Back to mysterious. Cleared. 🕵️')}};
+ const clearMonth=()=>{const n={...all};delete n[key];setAll(n);sv('kfc_att',n);setConf(false);say('Month cleared')};
+ const go=k=>{const d=new Date(y,m+k,1);setV({y:d.getFullYear(),m:d.getMonth()})};
+ const dbl=Object.values(rec).filter(r=>r.M&&r.E).length,seed=S.R+dbl+m;
+ const msg=S.R===0?EMPTY[0]:dbl>0?MSGD[0]:(S.L>=3&&S.L>=S.W/2)?MSGL[0]:S.W>=10?MSGP[0]:(S.O>S.W&&S.O>=3)?'Employee unavailable. Try again later. 😌':S.R>=6?'You’re becoming a permanent fixture. 🪑':'Attendance secured. Your bank account is proud. 💰';
+ const first=new Date(y,m,1).getDay();
+ const isNow=y===now.getFullYear()&&m===now.getMonth();
+ const exp=async type=>{
+  setMenu(false);
+  try{
+   const dls=await claude.use('downloads');
+   if(!dls){say('Downloads aren’t available in this view');return}
+   const data=type==='xlsx'?await makeXlsx(name,y,m,rec):makePdf(name,y,m,rec);
+   await dls.save({filename:fname(name,y,m)+type,data});say('Report ready');
+  }catch(e){if(e&&e.code==='declined')return;say('Export failed. Please try again')}
+ };
+ const hist=Object.keys(rec).map(Number).sort((a,b)=>a-b);
+ const cells=[];for(let i=0;i<first;i++)cells.push(html`<div key=${'e'+i}/>`);
+ for(let d=1;d<=S.n;d++){const r=rec[d]||{};cells.push(html`<button key=${d} class=${'day'+(isNow&&d===now.getDate()?' today':'')+(sel===d?' on':'')} onClick=${()=>setSel(d)}><span>${d}</span>${r.M&&html`<small class=${'ms '+r.M}>☀️ M: ${ST[r.M].n}</small>`}${r.E&&html`<small class=${'ms '+r.E}>🌙 E: ${ST[r.E].n}</small>`}</button>`)}
+ const cur=sel?rec[sel]||{}:{};
+ const SH=[['M','☀️ Morning Shift'],['E','🌙 Evening Shift']],OP=[['P','Present'],['L','Leave'],['O','Off'],[null,'Not Marked']];
+ if(boot)return html`<div class="boot"><div class="cup">☕</div><div class="bt">SHIFT HAPPENS.</div></div>`;
+ return html`<div class="app">
+  <div class="hd"><span class="stk">NO REFUNDS ☕</span><h1>SHIFT HAPPENS.</h1><div class="sub">My Shift, My Survival ☕</div><div class="wk">Kovai’s Filter Coffee</div></div>
+  <div class="card quote"><div class="qt" key=${qi}>“${QUOTES[qi]}”</div><button class="btn" onClick=${()=>setQi((qi+1+Math.floor(Math.random()*(QUOTES.length-1)))%QUOTES.length)}>Roast me / Motivate me 🔥</button></div>
+  <div class="card name"><div style=${{flex:1}}><label>Employee name</label>
+   <input value=${name} placeholder="Enter your name" onInput=${e=>{setName(e.target.value);sv('kfc_name',e.target.value)}}/></div></div>
+  <div class="stats">
+   <div class="stat k"><i>🫡</i><b>${S.W}</b><span>I SHOWED UP</span><small>Total Shifts Worked</small></div>
+   <div class="stat y"><i>🏃</i><b>${S.L}</b><span>ESCAPED</span><small>Total Leave Shifts</small></div>
+   <div class="stat w"><i>😴</i><b>${S.O}</b><span>PEACE</span><small>Total Off Shifts</small></div>
+   <div class="stat k"><i>📋</i><b>${S.R}</b><span>EVIDENCE</span><small>Total Marked Shifts</small></div></div>
+  <div class="card">
+   <div class="nav"><button class="btn" aria-label="Previous month" onClick=${()=>go(-1)}>‹</button>
+    <h2>${MONTHS[m]} ${y}</h2><button class="btn" aria-label="Next month" onClick=${()=>go(1)}>›</button></div>
+   <div style=${{textAlign:'center',marginBottom:10}}>${!isNow&&html`<button class="btn" onClick=${()=>setV({y:now.getFullYear(),m:now.getMonth()})}>Today</button>`}</div>
+   <div class="cap">Tap a date to confess your attendance.</div><div class="grid" key=${key}>${['S','M','T','W','T','F','S'].map((x,i)=>html`<div class="dow" key=${i}>${x}</div>`)}${cells}</div>
+   <div class="legend"><span><i class="P"/>Present</span><span><i class="L"/>Leave</span><span><i class="O"/>Off</span></div></div>
+  <div class="card msg">${msg}</div>
+  <div class="card"><h3>My Evidence Folder 📂</h3>
+   ${hist.length?hist.map(d=>{const r=rec[d];return html`<button class="row" key=${d} onClick=${()=>setSel(d)}><div class="d">${fd(y,m,d)}<span>${DAYS[new Date(y,m,d).getDay()]}</span></div><span style=${{display:'flex',flexDirection:'column',gap:4,alignItems:'flex-end'}}>${r.M&&html`<span class=${'pill '+r.M}>☀️ ${ST[r.M].n}</span>`}${r.E&&html`<span class=${'pill '+r.E}>🌙 ${ST[r.E].n}</span>`}</span></button>`}):html`<div class="empty">${EMPTY[(m+y)%EMPTY.length]}<br/>Tap a date to begin.</div>`}</div>
+  <div class="card"><h3>Monthly Summary · ${MONTHS[m]} ${y}</h3>
+   ${rowsOf(S).map(r=>html`<div class="sum" key=${r[0]}><span>${r[0]}</span><b>${r[1]}</b></div>`)}</div>
+  <button class="btn pri dl" onClick=${()=>setMenu(true)}>DOWNLOAD MY SURVIVAL REPORT</button>
+  <button class="link" onClick=${()=>setConf(true)} disabled=${!S.R}>Clear all attendance for this month</button>
+  ${sel&&html`<div class="ov" onClick=${()=>setSel(null)}><div class="sheet" onClick=${e=>e.stopPropagation()}>
+   <h4>What happened on this day? 👀</h4><p>${DAYS[new Date(y,m,sel).getDay()]}, ${fd(y,m,sel)} · both shifts optional</p>
+   ${SH.map(([k,t])=>html`<div key=${k} class="shs"><div class="sht">${t}</div><div class="sg">
+    ${OP.map(([s,n])=>{const on=(cur[k]||null)===s;return html`<button key=${n} class=${'sb'+(on?' sel '+(s||''):'')} onClick=${()=>save(sel,k,s)}><b>${n}</b><em>${s?FUN[k][s]:"Nothing to report. 🤐"}</em></button>`})}</div></div>`)}
+   <button class="btn pri" style=${{width:'100%',marginTop:4}} onClick=${()=>setSel(null)}>Done</button></div></div>`}
+  ${menu&&html`<div class="ov" onClick=${()=>setMenu(false)}><div class="sheet" onClick=${e=>e.stopPropagation()}>
+   <h4>Download report</h4><p>${MONTHS[m]} ${y}</p>
+   <button class="opt P" onClick=${()=>exp('xlsx')}>📊 Excel (.xlsx)</button>
+   <button class="opt O" onClick=${()=>exp('pdf')}>📄 PDF (.pdf)</button></div></div>`}
+  ${conf&&html`<div class="ov" onClick=${()=>setConf(false)}><div class="sheet" onClick=${e=>e.stopPropagation()}>
+   <h4>Clear ${MONTHS[m]} ${y}?</h4><p>This removes all ${S.R} marked shifts for this month. Other months aren’t affected.</p>
+   <button class="opt L" onClick=${clearMonth}>Yes, clear month</button><button class="btn" style=${{width:'100%'}} onClick=${()=>setConf(false)}>Cancel</button></div></div>`}
+  ${toast&&html`<div class="toast">${toast}</div>`}
+ </div>`;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(html`<${App}/>`);
+</script></body></html>
