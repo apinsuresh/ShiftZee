@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
+ <link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#FFD400">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="OnShift">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Attendance Tracker</title>
 <style>
@@ -205,5 +212,14 @@ function App(){
   ${toast&&html`<div class="toast">${toast}</div>`}
  </div>`;
 }
+ <script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js")
+      .then(() => console.log("OnShift offline support ready"))
+      .catch(err => console.error("SW error:", err));
+  });
+}
+</script>
 ReactDOM.createRoot(document.getElementById('root')).render(html`<${App}/>`);
 </script></body></html>
