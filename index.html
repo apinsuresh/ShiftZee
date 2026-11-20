@@ -212,7 +212,7 @@ function App(){
   ${toast&&html`<div class="toast">${toast}</div>`}
  </div>`;
 }
- <script>
+ 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./service-worker.js")
@@ -220,6 +220,6 @@ if ("serviceWorker" in navigator) {
       .catch(err => console.error("SW error:", err));
   });
 }
-</script>
+ 
 ReactDOM.createRoot(document.getElementById('root')).render(html`<${App}/>`);
 </script></body></html>
